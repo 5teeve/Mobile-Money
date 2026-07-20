@@ -91,14 +91,13 @@ LEFT JOIN compte_client cs  ON cs.id = o.compte_source_id
 LEFT JOIN compte_client cd  ON cd.id = o.compte_destination_id;
 
 INSERT INTO prefixe (prefixe, actif, categorie) VALUES
-('033', 1, 'interne'),
-('037', 1, 'interne'),
-('034', 1, 'externe'),
-('038', 1, 'externe');
+('034', 1, 'interne'),
+('038', 1, 'interne'),
+('032', 1, 'externe'),
+('033', 0, 'externe');
 
 INSERT INTO commission_externe (prefixe_id, taux_pourcentage) VALUES
-(3, 2.5),
-(4, 3.0);
+(3, 2.5);
 
 INSERT INTO type_operation (code, libelle) VALUES
 ('DEPOT', 'Dépôt'),
