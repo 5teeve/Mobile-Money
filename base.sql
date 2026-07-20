@@ -93,8 +93,8 @@ LEFT JOIN compte_client cd  ON cd.id = o.compte_destination_id;
 INSERT INTO prefixe (prefixe, actif, categorie) VALUES
 ('034', 1, 'interne'),
 ('038', 1, 'interne'),
-('032', 1, 'externe'),
-('033', 0, 'externe');
+('032', 0, 'externe'),
+('033', 1, 'externe');
 
 INSERT INTO commission_externe (prefixe_id, taux_pourcentage) VALUES
 (3, 2.5);
