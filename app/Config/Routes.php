@@ -37,6 +37,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
 
     $routes->get('situation/gains', 'SituationController::gains');
     $routes->get('situation/comptes', 'SituationController::comptes');
+    $routes->get('situation/a-envoyer', 'SituationExterneController::index');
 
     $routes->get('commission-externe', 'CommissionExterneController::index');
     $routes->post('commission-externe', 'CommissionExterneController::create');
