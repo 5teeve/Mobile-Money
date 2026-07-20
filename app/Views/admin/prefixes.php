@@ -19,6 +19,14 @@
     </div>
 <?php endif ?>
 
+<div class="panel">
+    <div style="display:flex;gap:.5rem;margin-bottom:var(--space-4);">
+        <a href="<?= site_url('admin/prefixes') ?>" class="btn btn-sm <?= empty($categorieFiltre) ? 'btn-primary' : 'btn-ghost' ?>">Tous</a>
+        <a href="<?= site_url('admin/prefixes') ?>?categorie=interne" class="btn btn-sm <?= $categorieFiltre === 'interne' ? 'btn-primary' : 'btn-ghost' ?>">Interne</a>
+        <a href="<?= site_url('admin/prefixes') ?>?categorie=externe" class="btn btn-sm <?= $categorieFiltre === 'externe' ? 'btn-primary' : 'btn-ghost' ?>">Externe</a>
+    </div>
+</div>
+
 <div class="panel card card-pad">
     <div class="panel-title"><?= ui_icon('plus') ?><h2>Ajouter un préfixe</h2></div>
     <form action="<?= site_url('admin/prefixes') ?>" method="post">
@@ -28,8 +36,15 @@
                 <label for="prefixe">Préfixe</label>
                 <input type="text" id="prefixe" name="prefixe" class="input mono" placeholder="Ex: 033" maxlength="3" required>
             </div>
-            <div class="field field-actions">
-                <div class="check-row" style="margin-bottom:.65rem;">
+            <div class="field">
+                <label for="categorie">Catégorie</label>
+                <select id="categorie" name="categorie" class="select" required>
+                    <option value="interne">Interne</option>
+                    <option value="externe">Externe</option>
+                </select>
+            </div>
+            <div class="field">
+                <div class="check-row" style="margin-top:2.2rem;">
                     <input type="checkbox" id="actif" name="actif" value="1" checked>
                     <label for="actif">Actif</label>
                 </div>
@@ -45,8 +60,8 @@
     <?php if (empty($prefixes)): ?>
         <div class="empty-state">
             <?= ui_icon('sliders', 'icon icon-lg') ?>
-            <h3>Aucun préfixe enregistré</h3>
-            <p>Ajoutez un préfixe opérateur ci-dessus pour commencer à router les numéros clients.</p>
+            <h3>Aucun préfixe défini</h3>
+            <p>Ajoutez un préfixe ci-dessus pour reconnaître les numéros de cet opérateur.</p>
         </div>
     <?php else: ?>
         <div class="table-wrap">
@@ -54,6 +69,7 @@
                 <thead>
                     <tr>
                         <th>Préfixe</th>
+                        <th>Catégorie</th>
                         <th>Statut</th>
                         <th></th>
                     </tr>
@@ -63,13 +79,16 @@
                         <tr>
                             <form id="form-prefixe-<?= $prefixe['id'] ?>" action="<?= site_url('admin/prefixes/' . $prefixe['id']) ?>" method="post"><?= csrf_field() ?></form>
                             <td>
-                                <div style="display:flex;align-items:center;gap:.6rem;">
-                                    <?= ui_prefix_chip($prefixe['prefixe']) ?>
-                                    <input form="form-prefixe-<?= $prefixe['id'] ?>" type="text" name="prefixe" value="<?= esc($prefixe['prefixe']) ?>" maxlength="3" class="input mono" style="max-width:6rem;">
-                                </div>
+                                <input form="form-prefixe-<?= $prefixe['id'] ?>" type="text" name="prefixe" value="<?= esc($prefixe['prefixe']) ?>" maxlength="3" class="input mono" style="max-width:6rem;">
                             </td>
                             <td>
-                                <select form="form-prefixe-<?= $prefixe['id'] ?>" name="actif" class="select" style="max-width:9rem;">
+                                <select form="form-prefixe-<?= $prefixe['id'] ?>" name="categorie" class="select" style="max-width:10rem;">
+                                    <option value="interne" <?= $prefixe['categorie'] === 'interne' ? 'selected' : '' ?>>Interne</option>
+                                    <option value="externe" <?= $prefixe['categorie'] === 'externe' ? 'selected' : '' ?>>Externe</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select form="form-prefixe-<?= $prefixe['id'] ?>" name="actif" class="select" style="max-width:8rem;">
                                     <option value="1" <?= $prefixe['actif'] ? 'selected' : '' ?>>Actif</option>
                                     <option value="0" <?= !$prefixe['actif'] ? 'selected' : '' ?>>Inactif</option>
                                 </select>

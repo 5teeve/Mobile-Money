@@ -13,6 +13,9 @@
             case 'client/operations':
                 $pageTitle = 'Opérations';
                 break;
+            case 'client/transfert-multiple':
+                $pageTitle = 'Envoi multiple';
+                break;
             case 'client/historique':
                 $pageTitle = 'Historique';
                 break;
@@ -37,6 +40,9 @@
                 </a>
                 <a href="<?= site_url('client/operations') ?>" class="<?= $route === 'client/operations' ? 'active' : '' ?>">
                     <?= ui_icon('wallet-down') ?> Opérations
+                </a>
+                <a href="<?= site_url('client/transfert-multiple') ?>" class="<?= $route === 'client/transfert-multiple' ? 'active' : '' ?>">
+                    <?= ui_icon('users') ?> Envoi multiple
                 </a>
                 <a href="<?= site_url('client/historique') ?>" class="<?= $route === 'client/historique' ? 'active' : '' ?>">
                     <?= ui_icon('history') ?> Historique

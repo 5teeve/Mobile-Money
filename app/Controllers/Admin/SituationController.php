@@ -15,7 +15,25 @@ class SituationController extends BaseController
                      ->get()
                      ->getResultArray();
 
-        return view('admin/situation_gains', ['gains' => $gains]);
+        $totalInterne = 0.0;
+        $totalExterne = 0.0;
+
+        foreach ($gains as $gain) {
+            $totalFrais = (float) ($gain['total_frais'] ?? 0);
+
+            if (($gain['categorie'] ?? 'interne') === 'externe') {
+                $totalExterne += $totalFrais;
+                continue;
+            }
+
+            $totalInterne += $totalFrais;
+        }
+
+        return view('admin/situation_gains', [
+            'gains' => $gains,
+            'totalInterne' => $totalInterne,
+            'totalExterne' => $totalExterne,
+        ]);
     }
 
     public function comptes()

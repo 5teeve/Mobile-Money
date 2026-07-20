@@ -6,18 +6,21 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', static function () {
-    return redirect()->to('/client/login');
+    return service('response')->redirect('/client/login');
 });
+
 $routes->group('client', ['namespace' => 'App\Controllers\Client'], function ($routes) {
     $routes->get('login', 'AuthController::showLogin');
     $routes->post('login', 'AuthController::login');
     $routes->get('logout', 'AuthController::logout');
-
+ 
     $routes->get('dashboard', 'CompteController::index');
     $routes->get('operations', 'OperationController::index');
     $routes->post('operations/depot', 'OperationController::depot');
     $routes->post('operations/retrait', 'OperationController::retrait');
     $routes->post('operations/transfert', 'OperationController::transfert');
+    $routes->get('transfert-multiple', 'TransfertMultipleController::index');
+    $routes->post('transfert-multiple', 'TransfertMultipleController::envoyer');
     $routes->get('historique', 'HistoriqueController::index');
 });
 
@@ -39,4 +42,10 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
 
     $routes->get('situation/gains', 'SituationController::gains');
     $routes->get('situation/comptes', 'SituationController::comptes');
+    $routes->get('situation/a-envoyer', 'SituationExterneController::index');
+
+    $routes->get('commission-externe', 'CommissionExterneController::index');
+    $routes->post('commission-externe', 'CommissionExterneController::create');
+    $routes->post('commission-externe/(:num)', 'CommissionExterneController::edit/$1');
+    $routes->get('commission-externe/(:num)/delete', 'CommissionExterneController::delete/$1');
 });

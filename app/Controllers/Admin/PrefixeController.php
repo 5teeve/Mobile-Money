@@ -16,8 +16,16 @@ class PrefixeController extends BaseController
 
     public function index()
     {
+        $categorie = $this->request->getGet('categorie');
+        $query = $this->prefixeModel;
+
+        if (in_array($categorie, ['interne', 'externe'], true)) {
+            $query = $query->where('categorie', $categorie);
+        }
+
         return view('admin/prefixes', [
-            'prefixes' => $this->prefixeModel->findAll(),
+            'prefixes' => $query->findAll(),
+            'categorieFiltre' => $categorie,
         ]);
     }
 
@@ -26,6 +34,7 @@ class PrefixeController extends BaseController
         $data = [
             'prefixe' => $this->request->getPost('prefixe'),
             'actif' => $this->request->getPost('actif') ? 1 : 0,
+            'categorie' => $this->request->getPost('categorie'),
         ];
 
         if (!$this->prefixeModel->insert($data)) {
@@ -40,6 +49,7 @@ class PrefixeController extends BaseController
         $data = [
             'prefixe' => $this->request->getPost('prefixe'),
             'actif' => $this->request->getPost('actif') ? 1 : 0,
+            'categorie' => $this->request->getPost('categorie'),
         ];
 
         if (!$this->prefixeModel->update($id, $data)) {

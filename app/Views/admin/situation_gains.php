@@ -4,53 +4,55 @@
 
 <?= $this->section('content') ?>
 
-<?php
-$nbOperations = array_sum(array_column($gains, 'nb_operations'));
-$totalFrais   = array_sum(array_column($gains, 'total_frais'));
-?>
+<div class="panel">
+    <p class="text-muted">Suivi des gains internes et externes avec une vue synthétique des montants collectés.</p>
+</div>
 
-<div class="kpi-row">
-    <div class="kpi-card">
-        <div class="kpi-label">Opérations facturées</div>
-        <div class="kpi-value"><?= number_format($nbOperations, 0, ',', ' ') ?></div>
+<div class="admin-stats-grid">
+    <div class="card admin-stats-card">
+        <div class="eyebrow">Gains interne</div>
+        <div class="amount"><?= number_format($totalInterne, 0, ',', ' ') ?> Ar</div>
     </div>
-    <div class="kpi-card">
-        <div class="kpi-label">Total des frais collectés</div>
-        <div class="kpi-value"><?= number_format($totalFrais, 0, ',', ' ') ?><small>Ar</small></div>
+    <div class="card admin-stats-card">
+        <div class="eyebrow">Gains externe</div>
+        <div class="amount"><?= number_format($totalExterne, 0, ',', ' ') ?> Ar</div>
     </div>
 </div>
 
 <div class="panel card">
-    <?php if (empty($gains)): ?>
-        <div class="empty-state">
-            <?= ui_icon('coins', 'icon icon-lg') ?>
-            <h3>Aucun gain enregistré</h3>
-            <p>Les frais perçus sur les opérations clients apparaîtront ici, groupés par jour et par type.</p>
-        </div>
-    <?php else: ?>
-        <div class="table-wrap">
-            <table class="table">
-                <thead>
+    <div class="panel-title">
+        <h2>Historique des gains</h2>
+    </div>
+    <div class="table-wrap">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Jour</th>
+                    <th>Type</th>
+                    <th>Catégorie</th>
+                    <th>Nb opérations</th>
+                    <th>Total frais</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($gains as $gain): ?>
                     <tr>
-                        <th>Jour</th>
-                        <th>Type</th>
-                        <th class="num">Nb opérations</th>
-                        <th class="num">Total frais</th>
+                        <td><?= esc($gain['jour']) ?></td>
+                        <td><?= esc($gain['libelle_type']) ?></td>
+                        <td>
+                            <?php if ($gain['categorie'] === 'externe'): ?>
+                                <span class="badge badge-warning">Externe</span>
+                            <?php else: ?>
+                                <span class="badge badge-neutral">Interne</span>
+                            <?php endif ?>
+                        </td>
+                        <td><?= esc($gain['nb_operations']) ?></td>
+                        <td><?= number_format((float) $gain['total_frais'], 0, ',', ' ') ?> Ar</td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($gains as $gain): ?>
-                        <tr>
-                            <td class="mono"><?= esc($gain['jour']) ?></td>
-                            <td><span class="badge badge-neutral"><?= esc($gain['libelle_type']) ?></span></td>
-                            <td class="num"><?= number_format((float) $gain['nb_operations'], 0, ',', ' ') ?></td>
-                            <td class="num"><?= number_format((float) $gain['total_frais'], 0, ',', ' ') ?> Ar</td>
-                        </tr>
-                    <?php endforeach ?>
-                </tbody>
-            </table>
-        </div>
-    <?php endif ?>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <?= $this->endSection() ?>
