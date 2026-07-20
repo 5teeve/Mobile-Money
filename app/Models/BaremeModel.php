@@ -12,10 +12,6 @@ class BaremeModel extends Model
     protected $useTimestamps = false;
     protected $allowedFields = ['type_operation_id', 'montant_min', 'montant_max', 'frais'];
 
-    /**
-     * Retourne le frais applicable pour un type d'operation et un montant donnes.
-     * 0.0 si aucune tranche ne correspond (ex: type sans frais).
-     */
     public function calculerFrais(int $typeOperationId, float $montant): float
     {
         $bareme = $this->where('type_operation_id', $typeOperationId)
