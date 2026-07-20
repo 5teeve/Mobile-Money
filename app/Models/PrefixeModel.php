@@ -38,5 +38,10 @@ class PrefixeModel extends Model
             'is_unique' => 'Ce préfixe existe déjà.',
         ],
     ];
+
+    public function getExternes(): array
+    {
+        return $this->where('categorie', 'externe')->findAll();
+    }
 }
 
