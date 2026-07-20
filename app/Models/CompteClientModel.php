@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Exceptions\OperationException;
 use CodeIgniter\Model;
 
 class CompteClientModel extends Model
@@ -22,5 +23,27 @@ class CompteClientModel extends Model
         }
 
         return $compte;
+    }
+
+    public function crediter(int $id, float $montant): array
+    {
+        $compte = $this->find($id);
+
+        $this->update($id, ['solde' => $compte['solde'] + $montant]);
+
+        return $this->find($id);
+    }
+
+    public function debiter(int $id, float $montant): array
+    {
+        $compte = $this->find($id);
+
+        if ($compte['solde'] < $montant) {
+            throw new OperationException('Solde insuffisant.');
+        }
+
+        $this->update($id, ['solde' => $compte['solde'] - $montant]);
+
+        return $this->find($id);
     }
 }

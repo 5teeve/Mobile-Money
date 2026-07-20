@@ -53,17 +53,19 @@ GROUP BY t.id, jour;
 CREATE VIEW vue_historique AS
 SELECT
     o.id,
-    o.date_operation,
-    t.code AS type_operation,
-    t.libelle AS libelle_type,
+    o.type_operation_id,
+    t.libelle              AS type_libelle,
+    o.compte_source_id,
+    cs.numero_telephone    AS numero_source,
+    o.compte_destination_id,
+    cd.numero_telephone    AS numero_destination,
     o.montant,
     o.frais,
-    cs.numero_telephone AS numero_source,
-    cd.numero_telephone AS numero_destination
+    o.date_operation
 FROM operation o
-JOIN type_operation t ON t.id = o.type_operation_id
-LEFT JOIN compte_client cs ON cs.id = o.compte_source_id
-LEFT JOIN compte_client cd ON cd.id = o.compte_destination_id;
+JOIN type_operation t       ON t.id = o.type_operation_id
+LEFT JOIN compte_client cs  ON cs.id = o.compte_source_id
+LEFT JOIN compte_client cd  ON cd.id = o.compte_destination_id;
 
 INSERT INTO prefixe (prefixe, actif) VALUES
 ('033', 1),
