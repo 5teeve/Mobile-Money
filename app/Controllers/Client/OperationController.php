@@ -9,6 +9,16 @@ use App\Services\OperationService;
 
 class OperationController extends BaseController
 {
+    public function index()
+    {
+        $compte = $this->compteConnecte();
+        if (! $compte) {
+            return redirect()->to('/client/login');
+        }
+
+        return view('client/operations', ['compte' => $compte]);
+    }
+
     private function compteConnecte(): ?array
     {
         if (! session()->get('isLoggedIn')) {
