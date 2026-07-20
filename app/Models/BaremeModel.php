@@ -25,4 +25,26 @@ class BaremeModel extends Model
 
         return $bareme ? (float) $bareme['frais'] : 0.0;
     }
+
+      protected $validationRules = [
+        'type_operation_id' => 'required|is_natural_no_zero',
+        'montant_min' => 'required|numeric',
+        'montant_max' => 'required|numeric',
+        'frais' => 'required|numeric',
+    ];
+
+    public function getByType(int $typeOperationId): array
+    {
+        return $this->where('type_operation_id', $typeOperationId)
+                    ->orderBy('montant_min', 'ASC')
+                    ->findAll();
+    }
+
+    public function findTranche(int $typeOperationId, float $montant): ?array
+    {
+        return $this->where('type_operation_id', $typeOperationId)
+                    ->where('montant_min <=', $montant)
+                    ->where('montant_max >=', $montant)
+                    ->first();
+    }
 }
