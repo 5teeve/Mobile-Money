@@ -18,6 +18,13 @@ class PrefixeModel extends Model
                             ->where('actif', 1)
                             ->first();
     }
+
+    public function trouverPourNumero(string $numero): ?array
+    {
+        return $this->where('prefixe', substr($numero, 0, 3))
+                     ->where('actif', 1)
+                     ->first();
+    }
     protected $validationRules = [
         'prefixe' => 'required|exact_length[3]|numeric|is_unique[prefixe.prefixe,id,{id}]',
         'actif' => 'permit_empty|in_list[0,1]',
