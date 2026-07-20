@@ -42,6 +42,12 @@ $pageTitle = trim(ob_get_clean()) ?: 'Admin';
                 <a href="<?= site_url('admin/situation/comptes') ?>" class="<?= uri_string() === 'admin/situation/comptes' ? 'active' : '' ?>">
                     <?= ui_icon('users') ?> Comptes clients
                 </a>
+                <a href="<?= site_url('admin/commission-externe') ?>" class="<?= uri_string() === 'admin/commission-externe' ? 'active' : '' ?>">
+                    <?= ui_icon('coins') ?> Commission externe
+                </a>
+                <a href="<?= site_url('admin/situation/a-envoyer') ?>" class="<?= uri_string() === 'admin/situation/a-envoyer' ? 'active' : '' ?>">
+                    <?= ui_icon('sliders') ?> Montants à envoyer
+                </a>
             </nav>
         </aside>
 
