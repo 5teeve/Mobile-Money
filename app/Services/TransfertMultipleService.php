@@ -30,14 +30,6 @@ class TransfertMultipleService
         $this->commissionExterneModel = new CommissionExterneModel();
     }
 
-    /**
-     * Envoie un montant total divise a parts egales vers plusieurs numeros,
-     * tous chez le meme operateur, en une seule transaction globale.
-     *
-     * @param string[] $numerosDestination
-     *
-     * @return array{montant_total: float, frais_total: float, details: array}
-     */
     public function envoyer(array $compteSource, array $numerosDestination, float $montantTotal, bool $inclureFraisRetrait): array
     {
         $numerosDestination = array_values(array_unique(array_filter($numerosDestination)));
@@ -50,7 +42,6 @@ class TransfertMultipleService
             throw new OperationException('Impossible de se transferer a soi-meme.');
         }
 
-        // meme operateur uniquement : tous les numeros doivent partager le meme prefixe
         $prefixeReference = null;
         foreach ($numerosDestination as $numero) {
             $prefixe = $this->prefixeModel->trouverPourNumero($numero);
@@ -71,7 +62,6 @@ class TransfertMultipleService
             $inclureFraisRetrait = false;
         }
 
-        // split du montant a parts egales, le reste (arrondi) est ajoute au dernier numero
         $nb = count($numerosDestination);
         $part = floor(($montantTotal / $nb) * 100) / 100;
         $reste = round($montantTotal - ($part * $nb), 2);
