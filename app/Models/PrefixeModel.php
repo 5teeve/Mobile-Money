@@ -11,6 +11,20 @@ class PrefixeModel extends Model
     protected $returnType    = 'array';
     protected $useTimestamps = false;
     protected $allowedFields = ['prefixe', 'actif'];
+    
+    protected $validationRules = [
+        'prefixe' => 'required|exact_length[3]|numeric|is_unique[prefixe.prefixe,id,{id}]',
+        'actif' => 'permit_empty|in_list[0,1]',
+    ];
+
+    protected $validationMessages = [
+        'prefixe' => [
+            'required' => 'Le préfixe est requis.',
+            'exact_length' => 'Le préfixe doit contenir exactement 3 chiffres.',
+            'numeric' => 'Le préfixe doit être numérique.',
+            'is_unique' => 'Ce préfixe existe déjà.',
+        ],
+    ];
 
     public function estActif(string $prefixe): bool
     {
