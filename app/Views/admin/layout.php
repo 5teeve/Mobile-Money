@@ -51,6 +51,9 @@ $pageTitle = trim(ob_get_clean()) ?: 'Admin';
                     <div class="eyebrow">Administration</div>
                     <h1><?= $pageTitle ?></h1>
                 </div>
+                <a class="btn btn-ghost" href="<?= site_url('client/login') ?>">
+                    <?= ui_icon('logout') ?> Retour au login
+                </a>
             </header>
             <div class="admin-content">
                 <?= $this->renderSection('content') ?>
