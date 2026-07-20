@@ -24,6 +24,9 @@ class OperationService
         $this->operationModel     = new OperationModel();
     }
 
+    /**
+     * @return array{montant: float, frais: float}
+     */
     public function depot(array $compte, float $montant): array
     {
         $type = $this->recupererType('DEPOT');
@@ -46,6 +49,9 @@ class OperationService
         return ['montant' => $montant, 'frais' => 0.0];
     }
 
+    /**
+     * @return array{montant: float, frais: float}
+     */
     public function retrait(array $compte, float $montant): array
     {
         $type  = $this->recupererType('RETRAIT');
