@@ -78,6 +78,36 @@
     </form>
 </section>
 
+<section id="transfert-panel" class="op-panel transfert card card-pad">
+    <div class="op-head">
+        <span class="op-icon"><?= ui_icon('out') ?></span>
+        <div>
+            <h2>Transfert</h2>
+            <p>Envoyez des fonds vers un autre numero Mobile Money.</p>
+        </div>
+    </div>
+    <form method="post" action="<?= site_url('client/operations/transfert') ?>">
+        <?= csrf_field() ?>
+        <div class="field">
+            <label for="numero_destination">Numero du destinataire</label>
+            <input type="text" id="numero_destination" name="numero_destination" class="input mono" placeholder="0331234567" required>
+        </div>
+        <div class="field">
+            <label for="montant_transfert">Montant</label>
+            <div class="input-affix">
+                <input type="number" step="0.01" min="0.01" id="montant_transfert" name="montant" class="input mono" placeholder="0" required>
+                <span class="affix">Ar</span>
+            </div>
+        </div>
+        <div class="check-row">
+            <input type="checkbox" id="inclure_frais_retrait" name="inclure_frais_retrait" value="1">
+            <label for="inclure_frais_retrait">Inclure les frais de retrait du destinataire</label>
+        </div>
+        <p class="field-hint">Sans effet si le destinataire est chez un autre operateur.</p>
+        <button type="submit" class="btn btn-primary">Transferer</button>
+    </form>
+</section>
+
 <a class="link-row" href="<?= site_url('client/historique') ?>">
     <span class="left">
         <?= ui_icon('history') ?>
