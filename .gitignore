@@ -1,5 +1,4 @@
 writable
-
 */config/development
 */logs/log-*.php
 !*/logs/index.html
