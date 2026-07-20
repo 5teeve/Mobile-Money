@@ -5,7 +5,9 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'AuthController::showLogin');
+$routes->get('/', static function () {
+    return redirect()->to('/client/login');
+});
 $routes->group('client', ['namespace' => 'App\Controllers\Client'], function ($routes) {
     $routes->get('login', 'AuthController::showLogin');
     $routes->post('login', 'AuthController::login');
