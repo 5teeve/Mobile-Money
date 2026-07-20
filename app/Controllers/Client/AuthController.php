@@ -19,26 +19,26 @@ class AuthController extends BaseController
             'numero_telephone' => 'required|regex_match[/^0[0-9]{9}$/]',
         ];
 
-        if (!$this->validate($rules)) {
+        if (! $this->validate($rules)) {
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
         }
 
-        $numero = $this->request->getPost('numero_telephone');
+        $numero       = $this->request->getPost('numero_telephone');
         $prefixeSaisi = substr($numero, 0, 3);
 
         $prefixeModel = new PrefixeModel();
-        if (!$prefixeModel->estActif($prefixeSaisi)) {
+        if (! $prefixeModel->estActif($prefixeSaisi)) {
             return redirect()->back()->withInput()->with('error', "Prefixe operateur non reconnu.");
         }
 
-        // pas d'inscription
+        // pas d'inscription prealable : creation auto du compte si inexistant
         $compteModel = new CompteClientModel();
-        $compte = $compteModel->findOrCreate($numero);
+        $compte      = $compteModel->findOrCreate($numero);
 
         session()->set([
-            'compte_id' => $compte['id'],
+            'compte_id'        => $compte['id'],
             'numero_telephone' => $compte['numero_telephone'],
-            'isLoggedIn' => true,
+            'isLoggedIn'       => true,
         ]);
 
         return redirect()->to('/client/dashboard');

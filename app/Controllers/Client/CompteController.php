@@ -9,14 +9,14 @@ class CompteController extends BaseController
 {
     public function index()
     {
-        if (!session()->get('isLoggedIn')) {
+        if (! session()->get('isLoggedIn')) {
             return redirect()->to('/client/login');
         }
 
         $compteModel = new CompteClientModel();
-        $compte = $compteModel->find(session()->get('compte_id'));
+        $compte      = $compteModel->find(session()->get('compte_id'));
 
-        if (!$compte) {
+        if (! $compte) {
             session()->destroy();
 
             return redirect()->to('/client/login');
