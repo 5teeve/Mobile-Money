@@ -10,7 +10,12 @@ class AuthController extends BaseController
 {
     public function showLogin()
     {
-        return view('client/login');
+        $prefixesActifs = array_column(
+            (new PrefixeModel())->where('actif', 1)->findAll(),
+            'prefixe'
+        );
+
+        return view('client/login', ['prefixesActifs' => $prefixesActifs]);
     }
 
     public function login()

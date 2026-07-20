@@ -1,0 +1,202 @@
+/* Boutons ------------------------------------------------------------ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: .9rem;
+  padding: .7rem 1.1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform .12s var(--ease), background-color .15s var(--ease), box-shadow .15s var(--ease);
+  line-height: 1.2;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary { background: var(--brand-600); color: #fff; box-shadow: var(--shadow-sm); }
+.btn-primary:hover { background: var(--brand-700); text-decoration: none; }
+
+.btn-amber { background: var(--amber-500); color: var(--ink-900); }
+.btn-amber:hover { background: var(--amber-600); text-decoration: none; }
+
+.btn-danger { background: var(--brick-600); color: #fff; }
+.btn-danger:hover { background: #9c3626; text-decoration: none; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-900);
+  border-color: var(--line-300);
+}
+.btn-ghost:hover { background: var(--paper-100); text-decoration: none; }
+
+.btn-quiet {
+  background: transparent;
+  color: var(--text-600);
+  padding: .5rem .6rem;
+}
+.btn-quiet:hover { color: var(--text-900); background: var(--paper-100); text-decoration: none; }
+
+.btn-block { width: 100%; }
+.btn-sm { padding: .45rem .75rem; font-size: .8125rem; border-radius: var(--radius-sm); }
+
+.btn-icon {
+  width: 2.25rem; height: 2.25rem; padding: 0; border-radius: var(--radius-sm);
+  background: transparent; color: var(--text-600); border: 1px solid transparent;
+}
+.btn-icon:hover { background: var(--paper-100); color: var(--text-900); }
+.btn-icon.danger:hover { background: var(--brick-100); color: var(--brick-600); }
+
+/* Champs de formulaire ------------------------------------------------ */
+.field { margin-bottom: var(--space-4); }
+.field label {
+  display: block;
+  font-size: .8125rem;
+  font-weight: 600;
+  color: var(--text-600);
+  margin-bottom: var(--space-2);
+}
+.field-hint { font-size: .75rem; color: var(--text-400); margin-top: var(--space-1); }
+
+.input, .select {
+  width: 100%;
+  padding: .65rem .8rem;
+  font-size: .9375rem;
+  font-family: var(--font-body);
+  color: var(--text-900);
+  background: var(--paper-000);
+  border: 1px solid var(--line-300);
+  border-radius: var(--radius-sm);
+  transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
+}
+.input:focus, .select:focus {
+  outline: none;
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 3px var(--brand-100);
+}
+.input.mono { font-family: var(--font-mono); letter-spacing: .02em; }
+
+.input-affix {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.input-affix .input { padding-right: 3.2rem; }
+.input-affix .affix {
+  position: absolute; right: 1px; top: 1px; bottom: 1px;
+  display: flex; align-items: center; padding: 0 .8rem;
+  font-family: var(--font-mono); font-size: .8125rem; color: var(--text-400);
+  background: var(--paper-050); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  pointer-events: none;
+}
+
+.check-row { display: flex; align-items: center; gap: var(--space-2); }
+.check-row input[type="checkbox"] { width: 1.05rem; height: 1.05rem; accent-color: var(--brand-600); }
+.check-row label { margin: 0; font-weight: 500; color: var(--text-900); }
+
+/* Cartes --------------------------------------------------------------- */
+.card {
+  background: var(--paper-000);
+  border: 1px solid var(--line-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+.card-pad { padding: var(--space-5); }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--space-3); margin-bottom: var(--space-4);
+}
+.card-header h2 { margin: 0; }
+.card-eyebrow {
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-400); margin-bottom: var(--space-1);
+}
+
+/* Puces (chips) préfixe -------------------------------------------------- */
+.chip {
+  display: inline-flex; align-items: center; gap: .4em;
+  font-family: var(--font-mono); font-size: .8125rem; font-weight: 500;
+  padding: .25em .6em; border-radius: var(--radius-pill);
+  background: var(--chip-bg, var(--paper-100)); color: var(--chip-fg, var(--text-600));
+  white-space: nowrap;
+}
+.chip::before {
+  content: ''; width: .5em; height: .5em; border-radius: 50%;
+  background: var(--chip-dot, var(--text-400)); flex: none;
+}
+.chip--muted { --chip-bg: var(--paper-100); --chip-fg: var(--text-400); }
+.chip--muted::before { display: none; }
+
+/* Badges de statut ------------------------------------------------------ */
+.badge {
+  display: inline-flex; align-items: center; gap: .35em;
+  font-size: .75rem; font-weight: 600; padding: .3em .65em; border-radius: var(--radius-pill);
+}
+.badge-success { background: var(--brand-100); color: var(--brand-700); }
+.badge-neutral { background: var(--paper-100); color: var(--text-600); }
+.badge-danger { background: var(--brick-100); color: var(--brick-600); }
+
+/* Alertes ---------------------------------------------------------------- */
+.alert {
+  display: flex; gap: var(--space-3); align-items: flex-start;
+  padding: var(--space-4); border-radius: var(--radius-md);
+  font-size: .875rem; margin-bottom: var(--space-4);
+  border: 1px solid transparent;
+}
+.alert .icon { flex: none; margin-top: .1em; }
+.alert-success { background: var(--brand-100); color: var(--brand-700); }
+.alert-danger { background: var(--brick-100); color: #8A3223; }
+.alert ul { margin: 0; padding-left: 1.1rem; }
+
+/* Tableaux ---------------------------------------------------------------- */
+.table-wrap { overflow-x: auto; }
+table.table {
+  width: 100%; border-collapse: collapse; font-size: .875rem;
+}
+table.table th {
+  text-align: left; font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-400);
+  padding: .65rem .85rem; border-bottom: 1px solid var(--line-200);
+}
+table.table td {
+  padding: .7rem .85rem; border-bottom: 1px solid var(--line-200);
+  vertical-align: middle; color: var(--text-900);
+}
+table.table tbody tr:last-child td { border-bottom: none; }
+table.table tbody tr:hover { background: var(--paper-050); }
+table.table td.num, table.table th.num { text-align: right; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* champs "inline-edit" à l'intérieur d'une table : discrets tant qu'ils
+   ne sont pas focus, pour ne pas surcharger visuellement chaque ligne */
+table.table .input, table.table .select {
+  border-color: transparent; background: transparent; padding: .35rem .5rem;
+}
+table.table .input:hover, table.table .select:hover { border-color: var(--line-300); }
+table.table .input:focus, table.table .select:focus { background: var(--paper-000); }
+
+/* État vide ----------------------------------------------------------------- */
+.empty-state {
+  text-align: center; padding: var(--space-7) var(--space-5);
+  color: var(--text-600);
+}
+.empty-state .icon-lg {
+  width: 44px; height: 44px; color: var(--text-400); margin-bottom: var(--space-3);
+}
+.empty-state h3 { color: var(--text-900); margin-bottom: var(--space-1); }
+.empty-state p { max-width: 34ch; margin: 0 auto var(--space-4); }
+
+/* Grille de KPI (situations admin) ------------------------------------------- */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--space-4); margin-bottom: var(--space-5);
+}
+.kpi-card {
+  background: var(--paper-000); border: 1px solid var(--line-200);
+  border-radius: var(--radius-md); padding: var(--space-4);
+}
+.kpi-label { font-size: .75rem; font-weight: 600; color: var(--text-400); text-transform: uppercase; letter-spacing: .04em; margin-bottom: var(--space-2); }
+.kpi-value { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 500; color: var(--text-900); font-variant-numeric: tabular-nums; }
+.kpi-value small { font-size: .95rem; color: var(--text-400); font-weight: 400; margin-left: .2em; }

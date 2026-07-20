@@ -1,0 +1,136 @@
+/*
+  Mobile Money — Design tokens
+  Sujet : switch mobile money multi-opérateurs (Madagascar).
+  Signature : le "chip" opérateur — un badge coloré dérivé du préfixe
+  téléphonique, répété du login jusqu'aux tables admin, qui rend visible
+  la logique réelle de l'app (routage par préfixe).
+*/
+
+:root {
+  /* Typographie — display technique / corps lisible / données tabulaires */
+  --font-display: 'Space Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Consolas, monospace;
+
+  /* Couleurs — encre teal (confiance/ledger), émeraude (argent qui entre),
+     ambre (accent opérateur), brique (sortie/alerte) */
+  --ink-900: #10231F;
+  --ink-800: #16302A;
+  --ink-700: #1D3E36;
+  --ink-600: #28524A;
+
+  --brand-700: #125E47;
+  --brand-600: #17795A;
+  --brand-500: #1E9169;
+  --brand-100: #DCEEE4;
+
+  --amber-600: #C77F1A;
+  --amber-500: #E2A63A;
+  --amber-100: #FBEBD1;
+
+  --brick-600: #B8432F;
+  --brick-500: #C85A45;
+  --brick-100: #F7DED8;
+
+  --steel-600: #2E6F9E;
+  --steel-100: #DCE9F2;
+  --plum-600: #8B4B9E;
+  --plum-100: #EEE0F2;
+
+  --paper-000: #FFFFFF;
+  --paper-050: #F2F3EE;
+  --paper-100: #E9EBE2;
+  --line-200: #DEE1D8;
+  --line-300: #C7CBBE;
+
+  --text-900: #16211E;
+  --text-600: #55645E;
+  --text-400: #8B978F;
+  --text-on-dark: #F2F3EE;
+  --text-on-dark-dim: #A9BAB3;
+
+  /* Forme */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-pill: 999px;
+
+  --shadow-sm: 0 1px 2px rgba(16, 35, 31, .07);
+  --shadow-md: 0 10px 28px -12px rgba(16, 35, 31, .28);
+  --shadow-card: 0 1px 0 rgba(16, 35, 31, .04), 0 1px 3px rgba(16, 35, 31, .05);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+
+/* Palette de chips préfixe — un opérateur = une couleur stable, dérivée
+   du préfixe (voir ui_helper::prefix_palette). Ne représente aucune marque. */
+.chip--0 { --chip-bg: var(--brand-100); --chip-fg: var(--brand-700); --chip-dot: var(--brand-600); }
+.chip--1 { --chip-bg: var(--steel-100); --chip-fg: #1E4A6B; --chip-dot: var(--steel-600); }
+.chip--2 { --chip-bg: var(--amber-100); --chip-fg: #8A5710; --chip-dot: var(--amber-600); }
+.chip--3 { --chip-bg: var(--plum-100); --chip-fg: #613269; --chip-dot: var(--plum-600); }
+.chip--4 { --chip-bg: var(--brick-100); --chip-fg: #7C2E1F; --chip-dot: var(--brick-600); }
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--text-900);
+  background: var(--paper-050);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -.01em;
+  margin: 0 0 var(--space-2);
+  color: var(--text-900);
+}
+
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.125rem; }
+h3 { font-size: 1rem; }
+
+p { margin: 0 0 var(--space-3); color: var(--text-600); }
+
+a { color: var(--brand-600); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.mono, .tabular { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+.icon { width: 1em; height: 1em; display: inline-block; vertical-align: -.15em; }
+
+:focus-visible {
+  outline: 2px solid var(--amber-600);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+button, input, select { font-family: inherit; }
+
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
