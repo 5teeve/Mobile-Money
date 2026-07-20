@@ -7,12 +7,14 @@ DROP TABLE IF EXISTS operation;
 DROP TABLE IF EXISTS bareme;
 DROP TABLE IF EXISTS compte_client;
 DROP TABLE IF EXISTS type_operation;
+DROP TABLE IF EXISTS commission_externe;
 DROP TABLE IF EXISTS prefixe;
 
 CREATE TABLE prefixe (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     prefixe TEXT NOT NULL UNIQUE,
-    actif INTEGER NOT NULL DEFAULT 1
+    actif INTEGER NOT NULL DEFAULT 1,
+    categorie TEXT NOT NULL DEFAULT 'interne'
 );
 
 CREATE TABLE type_operation (
@@ -50,16 +52,26 @@ CREATE TABLE operation (
     FOREIGN KEY (compte_destination_id) REFERENCES compte_client(id)
 );
 
+CREATE TABLE commission_externe (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    prefixe_id INTEGER NOT NULL UNIQUE,
+    taux_pourcentage REAL NOT NULL,
+    FOREIGN KEY (prefixe_id) REFERENCES prefixe(id)
+);
+
 CREATE VIEW vue_situation_gains AS
 SELECT
-    t.code                                  AS type_operation,
-    t.libelle                               AS libelle_type,
-    strftime('%Y-%m-%d', o.date_operation)  AS jour,
-    SUM(o.frais)                            AS total_frais,
-    COUNT(o.id)                             AS nb_operations
+    t.code                                        AS type_operation,
+    t.libelle                                      AS libelle_type,
+    strftime('%Y-%m-%d', o.date_operation)         AS jour,
+    COALESCE(p.categorie, 'interne')               AS categorie,
+    SUM(o.frais)                                   AS total_frais,
+    COUNT(o.id)                                    AS nb_operations
 FROM operation o
-JOIN type_operation t ON t.id = o.type_operation_id
-GROUP BY t.id, jour;
+JOIN type_operation t       ON t.id = o.type_operation_id
+LEFT JOIN compte_client cd  ON cd.id = o.compte_destination_id
+LEFT JOIN prefixe p         ON p.prefixe = substr(cd.numero_telephone, 1, 3)
+GROUP BY t.id, jour, categorie;
 
 CREATE VIEW vue_historique AS
 SELECT
@@ -78,9 +90,15 @@ JOIN type_operation t       ON t.id = o.type_operation_id
 LEFT JOIN compte_client cs  ON cs.id = o.compte_source_id
 LEFT JOIN compte_client cd  ON cd.id = o.compte_destination_id;
 
-INSERT INTO prefixe (prefixe, actif) VALUES
-('033', 1),
-('037', 1);
+INSERT INTO prefixe (prefixe, actif, categorie) VALUES
+('033', 1, 'interne'),
+('037', 1, 'interne'),
+('034', 1, 'externe'),
+('038', 1, 'externe');
+
+INSERT INTO commission_externe (prefixe_id, taux_pourcentage) VALUES
+(3, 2.5),
+(4, 3.0);
 
 INSERT INTO type_operation (code, libelle) VALUES
 ('DEPOT', 'Dépôt'),
@@ -112,4 +130,10 @@ INSERT INTO bareme (type_operation_id, montant_min, montant_max, frais) VALUES
 INSERT INTO compte_client (numero_telephone, solde) VALUES
 ('0331234567', 50000),
 ('0372345678', 15000),
-('0339876543', 100000);
+('0339876543', 100000),
+('0341122334', 20000),
+('0381234567', 5000);
+
+INSERT INTO operation (type_operation_id, compte_source_id, compte_destination_id, montant, frais) VALUES
+(3, 1, 4, 10000, 400),
+(3, 3, 5, 5000, 100);
