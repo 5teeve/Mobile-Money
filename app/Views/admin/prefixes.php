@@ -1,33 +1,17 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Préfixes - Admin</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<nav class="navbar navbar-expand navbar-dark bg-dark px-3">
-    <a class="navbar-brand" href="<?= site_url('admin') ?>">Admin</a>
-    <div class="navbar-nav">
-        <a class="nav-link" href="<?= site_url('admin/prefixes') ?>">Préfixes</a>
-        <a class="nav-link" href="<?= site_url('admin/types-operation') ?>">Types d'opération</a>
-        <a class="nav-link" href="<?= site_url('admin/baremes') ?>">Barèmes</a>
-        <a class="nav-link" href="<?= site_url('admin/situation/gains') ?>">Gains</a>
-        <a class="nav-link" href="<?= site_url('admin/situation/comptes') ?>">Comptes clients</a>
-        <a class="nav-link" href="<?= site_url('admin/commission-externe') ?>">Commission externe</a>
-        <a class="nav-link" href="<?= site_url('admin/situation/a-envoyer') ?>">Montants à envoyer</a>
-    </div>
-</nav>
-<div class="container mt-4">
-<h1>Préfixes opérateur</h1>
+<?= $this->extend('admin/layout') ?>
+
+<?= $this->section('title') ?>Préfixes opérateur<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
 
 <?php if (session('success')): ?>
-    <div class="alert alert-success"><?= session('success') ?></div>
+    <div class="alert alert-success"><?= ui_icon('check') ?><span><?= session('success') ?></span></div>
 <?php endif ?>
 
 <?php if (session('errors')): ?>
     <div class="alert alert-danger">
-        <ul class="mb-0">
+        <?= ui_icon('alert') ?>
+        <ul>
             <?php foreach (session('errors') as $error): ?>
                 <li><?= esc($error) ?></li>
             <?php endforeach ?>
@@ -35,70 +19,96 @@
     </div>
 <?php endif ?>
 
-<div class="btn-group mb-3">
-    <a href="<?= site_url('admin/prefixes') ?>" class="btn btn-sm <?= empty($categorieFiltre) ? 'btn-dark' : 'btn-outline-dark' ?>">Tous</a>
-    <a href="<?= site_url('admin/prefixes') ?>?categorie=interne" class="btn btn-sm <?= $categorieFiltre === 'interne' ? 'btn-dark' : 'btn-outline-dark' ?>">Interne</a>
-    <a href="<?= site_url('admin/prefixes') ?>?categorie=externe" class="btn btn-sm <?= $categorieFiltre === 'externe' ? 'btn-dark' : 'btn-outline-dark' ?>">Externe</a>
+<div class="panel">
+    <div style="display:flex;gap:.5rem;margin-bottom:var(--space-4);">
+        <a href="<?= site_url('admin/prefixes') ?>" class="btn btn-sm <?= empty($categorieFiltre) ? 'btn-primary' : 'btn-ghost' ?>">Tous</a>
+        <a href="<?= site_url('admin/prefixes') ?>?categorie=interne" class="btn btn-sm <?= $categorieFiltre === 'interne' ? 'btn-primary' : 'btn-ghost' ?>">Interne</a>
+        <a href="<?= site_url('admin/prefixes') ?>?categorie=externe" class="btn btn-sm <?= $categorieFiltre === 'externe' ? 'btn-primary' : 'btn-ghost' ?>">Externe</a>
+    </div>
 </div>
 
-<form action="<?= site_url('admin/prefixes') ?>" method="post" class="row g-2 mb-4">
-    <?= csrf_field() ?>
-    <div class="col-auto">
-        <input type="text" name="prefixe" class="form-control" placeholder="Ex: 033" maxlength="3" required>
-    </div>
-    <div class="col-auto">
-        <select name="categorie" class="form-select" required>
-            <option value="interne">Interne</option>
-            <option value="externe">Externe</option>
-        </select>
-    </div>
-    <div class="col-auto form-check mt-2">
-        <input type="checkbox" name="actif" value="1" class="form-check-input" id="actif" checked>
-        <label class="form-check-label" for="actif">Actif</label>
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Ajouter</button>
-    </div>
-</form>
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Préfixe</th>
-            <th>Catégorie</th>
-            <th>Statut</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($prefixes as $prefixe): ?>
-            <tr>
-                <form id="form-prefixe-<?= $prefixe['id'] ?>" action="<?= site_url('admin/prefixes/' . $prefixe['id']) ?>" method="post"><?= csrf_field() ?></form>
-                <td>
-                    <input form="form-prefixe-<?= $prefixe['id'] ?>" type="text" name="prefixe" value="<?= esc($prefixe['prefixe']) ?>" maxlength="3" class="form-control">
-                </td>
-                <td>
-                    <select form="form-prefixe-<?= $prefixe['id'] ?>" name="categorie" class="form-select">
-                        <option value="interne" <?= $prefixe['categorie'] === 'interne' ? 'selected' : '' ?>>Interne</option>
-                        <option value="externe" <?= $prefixe['categorie'] === 'externe' ? 'selected' : '' ?>>Externe</option>
-                    </select>
-                </td>
-                <td>
-                    <select form="form-prefixe-<?= $prefixe['id'] ?>" name="actif" class="form-select">
-                        <option value="1" <?= $prefixe['actif'] ? 'selected' : '' ?>>Actif</option>
-                        <option value="0" <?= !$prefixe['actif'] ? 'selected' : '' ?>>Inactif</option>
-                    </select>
-                </td>
-                <td class="text-nowrap">
-                    <button form="form-prefixe-<?= $prefixe['id'] ?>" type="submit" class="btn btn-sm btn-secondary">Enregistrer</button>
-                    <a href="<?= site_url('admin/prefixes/' . $prefixe['id'] . '/delete') ?>"
-                       class="btn btn-sm btn-danger"
-                       onclick="return confirm('Supprimer ce préfixe ?')">Supprimer</a>
-                </td>
-            </tr>
-        <?php endforeach ?>
-    </tbody>
-</table>
+<div class="panel card card-pad">
+    <div class="panel-title"><?= ui_icon('plus') ?><h2>Ajouter un préfixe</h2></div>
+    <form action="<?= site_url('admin/prefixes') ?>" method="post">
+        <?= csrf_field() ?>
+        <div class="form-row">
+            <div class="field">
+                <label for="prefixe">Préfixe</label>
+                <input type="text" id="prefixe" name="prefixe" class="input mono" placeholder="Ex: 033" maxlength="3" required>
+            </div>
+            <div class="field">
+                <label for="categorie">Catégorie</label>
+                <select id="categorie" name="categorie" class="select" required>
+                    <option value="interne">Interne</option>
+                    <option value="externe">Externe</option>
+                </select>
+            </div>
+            <div class="field">
+                <div class="check-row" style="margin-top:2.2rem;">
+                    <input type="checkbox" id="actif" name="actif" value="1" checked>
+                    <label for="actif">Actif</label>
+                </div>
+            </div>
+            <div class="field field-actions">
+                <button type="submit" class="btn btn-primary">Ajouter</button>
+            </div>
+        </div>
+    </form>
 </div>
-</body>
-</html>
+
+<div class="panel card">
+    <?php if (empty($prefixes)): ?>
+        <div class="empty-state">
+            <?= ui_icon('sliders', 'icon icon-lg') ?>
+            <h3>Aucun préfixe défini</h3>
+            <p>Ajoutez un préfixe ci-dessus pour reconnaître les numéros de cet opérateur.</p>
+        </div>
+    <?php else: ?>
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Préfixe</th>
+                        <th>Catégorie</th>
+                        <th>Statut</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($prefixes as $prefixe): ?>
+                        <tr>
+                            <form id="form-prefixe-<?= $prefixe['id'] ?>" action="<?= site_url('admin/prefixes/' . $prefixe['id']) ?>" method="post"><?= csrf_field() ?></form>
+                            <td>
+                                <input form="form-prefixe-<?= $prefixe['id'] ?>" type="text" name="prefixe" value="<?= esc($prefixe['prefixe']) ?>" maxlength="3" class="input mono" style="max-width:6rem;">
+                            </td>
+                            <td>
+                                <select form="form-prefixe-<?= $prefixe['id'] ?>" name="categorie" class="select" style="max-width:10rem;">
+                                    <option value="interne" <?= $prefixe['categorie'] === 'interne' ? 'selected' : '' ?>>Interne</option>
+                                    <option value="externe" <?= $prefixe['categorie'] === 'externe' ? 'selected' : '' ?>>Externe</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select form="form-prefixe-<?= $prefixe['id'] ?>" name="actif" class="select" style="max-width:8rem;">
+                                    <option value="1" <?= $prefixe['actif'] ? 'selected' : '' ?>>Actif</option>
+                                    <option value="0" <?= !$prefixe['actif'] ? 'selected' : '' ?>>Inactif</option>
+                                </select>
+                            </td>
+                            <td class="text-nowrap">
+                                <div style="display:flex;gap:.4rem;justify-content:flex-end;">
+                                    <button form="form-prefixe-<?= $prefixe['id'] ?>" type="submit" class="btn btn-sm btn-ghost">Enregistrer</button>
+                                    <a href="<?= site_url('admin/prefixes/' . $prefixe['id'] . '/delete') ?>"
+                                       class="btn-icon danger"
+                                       title="Supprimer"
+                                       aria-label="Supprimer ce préfixe"
+                                       onclick="return confirm('Supprimer ce préfixe ?')"><?= ui_icon('trash') ?></a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif ?>
+</div>
+
+<?= $this->endSection() ?>
