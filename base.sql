@@ -1,3 +1,14 @@
+PRAGMA foreign_keys = ON;
+
+DROP VIEW IF EXISTS vue_historique;
+DROP VIEW IF EXISTS vue_situation_gains;
+
+DROP TABLE IF EXISTS operation;
+DROP TABLE IF EXISTS bareme;
+DROP TABLE IF EXISTS compte_client;
+DROP TABLE IF EXISTS type_operation;
+DROP TABLE IF EXISTS prefixe;
+
 CREATE TABLE prefixe (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     prefixe TEXT NOT NULL UNIQUE,
@@ -41,11 +52,11 @@ CREATE TABLE operation (
 
 CREATE VIEW vue_situation_gains AS
 SELECT
-    t.code AS type_operation,
-    t.libelle AS libelle_type,
-    strftime('%Y-%m-%d', o.date_operation) AS jour,
-    SUM(o.frais) AS total_frais,
-    COUNT(o.id) AS nb_operations
+    t.code                                  AS type_operation,
+    t.libelle                               AS libelle_type,
+    strftime('%Y-%m-%d', o.date_operation)  AS jour,
+    SUM(o.frais)                            AS total_frais,
+    COUNT(o.id)                             AS nb_operations
 FROM operation o
 JOIN type_operation t ON t.id = o.type_operation_id
 GROUP BY t.id, jour;
@@ -102,7 +113,3 @@ INSERT INTO compte_client (numero_telephone, solde) VALUES
 ('0331234567', 50000),
 ('0372345678', 15000),
 ('0339876543', 100000);
-
-
-
-
