@@ -16,6 +16,9 @@
             case 'client/transfert-multiple':
                 $pageTitle = 'Envoi multiple';
                 break;
+            case 'client/epargne':
+                $pageTitle = 'Épargne';
+                break;
             case 'client/historique':
                 $pageTitle = 'Historique';
                 break;
@@ -43,6 +46,9 @@
                 </a>
                 <a href="<?= site_url('client/transfert-multiple') ?>" class="<?= $route === 'client/transfert-multiple' ? 'active' : '' ?>">
                     <?= ui_icon('users') ?> Envoi multiple
+                </a>
+                <a href="<?= site_url('client/epargne') ?>" class="<?= $route === 'client/epargne' ? 'active' : '' ?>">
+                    <?= ui_icon('coins') ?> Épargne
                 </a>
                 <a href="<?= site_url('client/historique') ?>" class="<?= $route === 'client/historique' ? 'active' : '' ?>">
                     <?= ui_icon('history') ?> Historique

@@ -11,7 +11,7 @@ class CompteClientModel extends Model
     protected $primaryKey    = 'id';
     protected $returnType    = 'array';
     protected $useTimestamps = false;
-    protected $allowedFields = ['numero_telephone', 'solde', 'date_creation'];
+    protected $allowedFields = ['numero_telephone', 'solde', 'solde_epargne', 'taux_epargne', 'date_creation'];
 
     public function findOrCreate(string $numero): array
     {
@@ -43,6 +43,22 @@ class CompteClientModel extends Model
         }
 
         $this->update($id, ['solde' => $compte['solde'] - $montant]);
+
+        return $this->find($id);
+    }
+
+    public function crediterEpargne(int $id, float $montant): array
+    {
+        $compte = $this->find($id);
+
+        $this->update($id, ['solde_epargne' => $compte['solde_epargne'] + $montant]);
+
+        return $this->find($id);
+    }
+
+    public function definirTauxEpargne(int $id, float $taux): array
+    {
+        $this->update($id, ['taux_epargne' => $taux]);
 
         return $this->find($id);
     }

@@ -8,7 +8,6 @@ use App\Models\CommissionExterneModel;
 use App\Models\CompteClientModel;
 use App\Models\OperationModel;
 use App\Models\PrefixeModel;
-use App\Models\PromotionModel;
 use App\Models\TypeOperationModel;
 use Config\Database;
 
@@ -20,7 +19,6 @@ class OperationService
     private OperationModel $operationModel;
     private PrefixeModel $prefixeModel;
     private CommissionExterneModel $commissionExterneModel;
-    private PromotionModel $promotionModel;
 
     public function __construct()
     {
@@ -30,7 +28,6 @@ class OperationService
         $this->operationModel = new OperationModel();
         $this->prefixeModel = new PrefixeModel();
         $this->commissionExterneModel = new CommissionExterneModel();
-        $this->promotionModel = new PromotionModel();
     }
 
     /**
@@ -90,7 +87,7 @@ class OperationService
     }
 
     /**
-     * @return array{montant: float, frais: float, externe: bool}
+     * @return array{montant: float, frais: float, externe: bool, epargne: float}
      */
     public function transfert(array $compteSource, string $numeroDestination, float $montant, bool $inclureFraisRetrait): array
     {
@@ -113,15 +110,6 @@ class OperationService
         $typeTransfert = $this->recupererType('TRANSFERT');
         $fraisTransfert = $this->baremeModel->calculerFrais((int) $typeTransfert['id'], $montant);
 
-        // promo % sur frais transfert, transferts internes uniquement
-        if (! $estExterne) {
-            $promo = $this->promotionModel->promotionActive();
-            if ($promo) {
-                $reduction = round($fraisTransfert * (float) $promo['pourcentage'] / 100, 2);
-                $fraisTransfert = max(0.0, $fraisTransfert - $reduction);
-            }
-        }
-
         $fraisRetrait = 0.0;
         if ($inclureFraisRetrait) {
             $typeRetrait = $this->recupererType('RETRAIT');
@@ -134,11 +122,14 @@ class OperationService
             $commissionExterne = round($montant * $taux / 100, 2);
         }
 
+        $tauxEpargne = (float) ($compteSource['taux_epargne'] ?? 0);
+        $montantEpargne = $tauxEpargne > 0 ? round($montant * $tauxEpargne / 100, 2) : 0.0;
+
         $fraisTotal = $fraisTransfert + $fraisRetrait + $commissionExterne;
-        $totalDebit = $montant + $fraisTotal;
+        $totalDebit = $montant + $fraisTotal + $montantEpargne;
 
         if ($totalDebit > (float) $compteSource['solde']) {
-            throw new OperationException("Solde insuffisant (montant + frais = {$totalDebit} Ar).");
+            throw new OperationException("Solde insuffisant (montant + frais + epargne = {$totalDebit} Ar).");
         }
 
         $compteDestination = $this->compteModel->findOrCreate($numeroDestination);
@@ -150,6 +141,10 @@ class OperationService
         $this->compteModel->debiter((int) $compteSource['id'], $totalDebit);
         $this->compteModel->crediter((int) $compteDestination['id'], $montantCredite);
 
+        if ($montantEpargne > 0) {
+            $this->compteModel->crediterEpargne((int) $compteSource['id'], $montantEpargne);
+        }
+
         $this->operationModel->insert([
             'type_operation_id' => $typeTransfert['id'],
             'compte_source_id' => $compteSource['id'],
@@ -160,7 +155,7 @@ class OperationService
 
         $this->finaliser($db);
 
-        return ['montant' => $montant, 'frais' => $fraisTotal, 'externe' => $estExterne];
+        return ['montant' => $montant, 'frais' => $fraisTotal, 'externe' => $estExterne, 'epargne' => $montantEpargne];
     }
 
     private function recupererType(string $code): array

@@ -48,6 +48,14 @@
     </a>
 </div>
 
+<a class="link-row" href="<?= site_url('client/epargne') ?>">
+    <span class="left">
+        <?= ui_icon('coins') ?>
+        Épargne — <?= number_format((float) $compte['solde_epargne'], 0, ',', ' ') ?> Ar
+    </span>
+    <?= ui_icon('chevron') ?>
+</a>
+
 <a class="link-row" href="<?= site_url('client/historique') ?>">
     <span class="left">
         <?= ui_icon('history') ?>

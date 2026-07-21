@@ -100,7 +100,11 @@ class OperationController extends BaseController
             return redirect()->back()->withInput()->with('error', $e->getMessage());
         }
 
-        return redirect()->to('/client/dashboard')
-            ->with('success', "Transfert de {$resultat['montant']} Ar vers {$numeroDestination} effectue (frais: {$resultat['frais']} Ar).");
+        $message = "Transfert de {$resultat['montant']} Ar vers {$numeroDestination} effectue (frais: {$resultat['frais']} Ar).";
+        if ($resultat['epargne'] > 0) {
+            $message .= " {$resultat['epargne']} Ar mis de cote en epargne.";
+        }
+
+        return redirect()->to('/client/dashboard')->with('success', $message);
     }
 }

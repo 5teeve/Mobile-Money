@@ -54,8 +54,12 @@ class TransfertMultipleController extends BaseController
 
         $nb = count($resultat['details']);
 
-        return redirect()->to('/client/dashboard')
-            ->with('success', "Envoi multiple de {$resultat['montant_total']} Ar reparti entre {$nb} numeros effectue (frais totaux: {$resultat['frais_total']} Ar).");
+        $message = "Envoi multiple de {$resultat['montant_total']} Ar reparti entre {$nb} numeros effectue (frais totaux: {$resultat['frais_total']} Ar).";
+        if ($resultat['epargne_total'] > 0) {
+            $message .= " {$resultat['epargne_total']} Ar mis de cote en epargne.";
+        }
+
+        return redirect()->to('/client/dashboard')->with('success', $message);
     }
 
     private function compteConnecte(): ?array

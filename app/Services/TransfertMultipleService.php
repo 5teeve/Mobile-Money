@@ -8,7 +8,6 @@ use App\Models\CommissionExterneModel;
 use App\Models\CompteClientModel;
 use App\Models\OperationModel;
 use App\Models\PrefixeModel;
-use App\Models\PromotionModel;
 use App\Models\TypeOperationModel;
 use Config\Database;
 
@@ -20,7 +19,6 @@ class TransfertMultipleService
     private OperationModel $operationModel;
     private PrefixeModel $prefixeModel;
     private CommissionExterneModel $commissionExterneModel;
-    private PromotionModel $promotionModel;
 
     public function __construct()
     {
@@ -30,7 +28,6 @@ class TransfertMultipleService
         $this->operationModel = new OperationModel();
         $this->prefixeModel = new PrefixeModel();
         $this->commissionExterneModel = new CommissionExterneModel();
-        $this->promotionModel = new PromotionModel();
     }
 
     public function envoyer(array $compteSource, array $numerosDestination, float $montantTotal, bool $inclureFraisRetrait): array
@@ -76,27 +73,22 @@ class TransfertMultipleService
             ? $this->commissionExterneModel->tauxPourPrefixe((int) $prefixeReference['id'])
             : 0.0;
 
-        // promo % sur frais transfert, transferts internes uniquement (une seule lecture pour tout le lot)
-        $promo = $estExterne ? null : $this->promotionModel->promotionActive();
-
         $details = [];
         $totalDebit = 0.0;
         $fraisTotal = 0.0;
+
+        $tauxEpargne = (float) ($compteSource['taux_epargne'] ?? 0);
+        $montantEpargneTotal = 0.0;
 
         foreach ($numerosDestination as $i => $numero) {
             $montantPart = $part + ($i === $nb - 1 ? $reste : 0.0);
 
             $fraisTransfert = $this->baremeModel->calculerFrais((int) $typeTransfert['id'], $montantPart);
-
-            if ($promo) {
-                $reduction = round($fraisTransfert * (float) $promo['pourcentage'] / 100, 2);
-                $fraisTransfert = max(0.0, $fraisTransfert - $reduction);
-            }
-
             $fraisRetrait = $typeRetrait
                 ? $this->baremeModel->calculerFrais((int) $typeRetrait['id'], $montantPart)
                 : 0.0;
             $commissionExterne = $estExterne ? round($montantPart * $tauxCommissionExterne / 100, 2) : 0.0;
+            $montantEpargne = $tauxEpargne > 0 ? round($montantPart * $tauxEpargne / 100, 2) : 0.0;
 
             $fraisPart = $fraisTransfert + $fraisRetrait + $commissionExterne;
             $montantCredite = $montantPart + $fraisRetrait;
@@ -108,18 +100,23 @@ class TransfertMultipleService
                 'montant_credite' => $montantCredite,
             ];
 
-            $totalDebit += $montantPart + $fraisPart;
+            $totalDebit += $montantPart + $fraisPart + $montantEpargne;
             $fraisTotal += $fraisPart;
+            $montantEpargneTotal += $montantEpargne;
         }
 
         if ($totalDebit > (float) $compteSource['solde']) {
-            throw new OperationException("Solde insuffisant (montant + frais = {$totalDebit} Ar).");
+            throw new OperationException("Solde insuffisant (montant + frais + epargne = {$totalDebit} Ar).");
         }
 
         $db = Database::connect();
         $db->transStart();
 
         $this->compteModel->debiter((int) $compteSource['id'], $totalDebit);
+
+        if ($montantEpargneTotal > 0) {
+            $this->compteModel->crediterEpargne((int) $compteSource['id'], $montantEpargneTotal);
+        }
 
         foreach ($details as $detail) {
             $compteDestination = $this->compteModel->findOrCreate($detail['numero']);
@@ -140,6 +137,7 @@ class TransfertMultipleService
         return [
             'montant_total' => $montantTotal,
             'frais_total' => round($fraisTotal, 2),
+            'epargne_total' => round($montantEpargneTotal, 2),
             'details' => $details,
         ];
     }
