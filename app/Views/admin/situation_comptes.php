@@ -10,6 +10,7 @@ $soldeTotal = array_sum(array_column($comptes, 'solde'));
 $soldeMoyen = $nbComptes > 0 ? $soldeTotal / $nbComptes : 0;
 ?>
 
+
 <div class="kpi-row">
     <div class="kpi-card">
         <div class="kpi-label">Comptes actifs</div>
