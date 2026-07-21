@@ -32,6 +32,9 @@ $pageTitle = trim(ob_get_clean()) ?: 'Admin';
                 <a href="<?= site_url('admin/baremes') ?>" class="<?= uri_string() === 'admin/baremes' ? 'active' : '' ?>">
                     <?= ui_icon('sliders') ?> Barèmes
                 </a>
+                <a href="<?= site_url('admin/promotions') ?>" class="<?= uri_string() === 'admin/promotions' ? 'active' : '' ?>">
+                    <?= ui_icon('coins') ?> Promotions
+                </a>
             </nav>
 
             <nav class="nav-group">

@@ -8,6 +8,7 @@ use App\Models\CommissionExterneModel;
 use App\Models\CompteClientModel;
 use App\Models\OperationModel;
 use App\Models\PrefixeModel;
+use App\Models\PromotionModel;
 use App\Models\TypeOperationModel;
 use Config\Database;
 
@@ -19,6 +20,7 @@ class OperationService
     private OperationModel $operationModel;
     private PrefixeModel $prefixeModel;
     private CommissionExterneModel $commissionExterneModel;
+    private PromotionModel $promotionModel;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class OperationService
         $this->operationModel = new OperationModel();
         $this->prefixeModel = new PrefixeModel();
         $this->commissionExterneModel = new CommissionExterneModel();
+        $this->promotionModel = new PromotionModel();
     }
 
     /**
@@ -109,6 +112,15 @@ class OperationService
 
         $typeTransfert = $this->recupererType('TRANSFERT');
         $fraisTransfert = $this->baremeModel->calculerFrais((int) $typeTransfert['id'], $montant);
+
+        // promo % sur frais transfert, transferts internes uniquement
+        if (! $estExterne) {
+            $promo = $this->promotionModel->promotionActive();
+            if ($promo) {
+                $reduction = round($fraisTransfert * (float) $promo['pourcentage'] / 100, 2);
+                $fraisTransfert = max(0.0, $fraisTransfert - $reduction);
+            }
+        }
 
         $fraisRetrait = 0.0;
         if ($inclureFraisRetrait) {

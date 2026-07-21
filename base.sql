@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS bareme;
 DROP TABLE IF EXISTS compte_client;
 DROP TABLE IF EXISTS type_operation;
 DROP TABLE IF EXISTS commission_externe;
+DROP TABLE IF EXISTS promotion;
 DROP TABLE IF EXISTS prefixe;
 
 CREATE TABLE prefixe (
@@ -59,6 +60,13 @@ CREATE TABLE commission_externe (
     FOREIGN KEY (prefixe_id) REFERENCES prefixe(id)
 );
 
+CREATE TABLE promotion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    libelle TEXT NOT NULL,
+    pourcentage REAL NOT NULL,
+    actif INTEGER NOT NULL DEFAULT 1
+);
+
 CREATE VIEW vue_situation_gains AS
 SELECT
     t.code                                        AS type_operation,
@@ -98,6 +106,9 @@ INSERT INTO prefixe (prefixe, actif, categorie) VALUES
 
 INSERT INTO commission_externe (prefixe_id, taux_pourcentage) VALUES
 (3, 2.5);
+
+INSERT INTO promotion (libelle, pourcentage, actif) VALUES
+('Promo lancement transferts internes', 20, 1);
 
 INSERT INTO type_operation (code, libelle) VALUES
 ('DEPOT', 'Dépôt'),

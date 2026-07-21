@@ -40,6 +40,11 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], static functio
     $routes->post('baremes/(:num)', 'BaremeController::edit/$1');
     $routes->get('baremes/(:num)/delete', 'BaremeController::delete/$1');
 
+    $routes->get('promotions', 'PromotionController::index');
+    $routes->post('promotions', 'PromotionController::create');
+    $routes->post('promotions/(:num)', 'PromotionController::edit/$1');
+    $routes->get('promotions/(:num)/delete', 'PromotionController::delete/$1');
+
     $routes->get('situation/gains', 'SituationController::gains');
     $routes->get('situation/comptes', 'SituationController::comptes');
     $routes->get('situation/a-envoyer', 'SituationExterneController::index');

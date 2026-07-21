@@ -38,7 +38,7 @@
                     <div class="field">
                         <label for="numero_telephone">Numéro de téléphone</label>
                         <input type="tel" inputmode="numeric" id="numero_telephone" name="numero_telephone"
-                            class="input mono" value="0341122334" value="<?= old('numero_telephone') ?>"
+                            class="input mono" value="0331234567" value="<?= old('numero_telephone') ?>"
                             autocomplete="tel" autofocus required>
                         <div id="phone-live" class="phone-live" data-state="unknown"></div>
                     </div>

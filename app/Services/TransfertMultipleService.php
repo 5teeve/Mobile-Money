@@ -8,6 +8,7 @@ use App\Models\CommissionExterneModel;
 use App\Models\CompteClientModel;
 use App\Models\OperationModel;
 use App\Models\PrefixeModel;
+use App\Models\PromotionModel;
 use App\Models\TypeOperationModel;
 use Config\Database;
 
@@ -19,6 +20,7 @@ class TransfertMultipleService
     private OperationModel $operationModel;
     private PrefixeModel $prefixeModel;
     private CommissionExterneModel $commissionExterneModel;
+    private PromotionModel $promotionModel;
 
     public function __construct()
     {
@@ -28,6 +30,7 @@ class TransfertMultipleService
         $this->operationModel = new OperationModel();
         $this->prefixeModel = new PrefixeModel();
         $this->commissionExterneModel = new CommissionExterneModel();
+        $this->promotionModel = new PromotionModel();
     }
 
     public function envoyer(array $compteSource, array $numerosDestination, float $montantTotal, bool $inclureFraisRetrait): array
@@ -73,6 +76,9 @@ class TransfertMultipleService
             ? $this->commissionExterneModel->tauxPourPrefixe((int) $prefixeReference['id'])
             : 0.0;
 
+        // promo % sur frais transfert, transferts internes uniquement (une seule lecture pour tout le lot)
+        $promo = $estExterne ? null : $this->promotionModel->promotionActive();
+
         $details = [];
         $totalDebit = 0.0;
         $fraisTotal = 0.0;
@@ -81,6 +87,12 @@ class TransfertMultipleService
             $montantPart = $part + ($i === $nb - 1 ? $reste : 0.0);
 
             $fraisTransfert = $this->baremeModel->calculerFrais((int) $typeTransfert['id'], $montantPart);
+
+            if ($promo) {
+                $reduction = round($fraisTransfert * (float) $promo['pourcentage'] / 100, 2);
+                $fraisTransfert = max(0.0, $fraisTransfert - $reduction);
+            }
+
             $fraisRetrait = $typeRetrait
                 ? $this->baremeModel->calculerFrais((int) $typeRetrait['id'], $montantPart)
                 : 0.0;
